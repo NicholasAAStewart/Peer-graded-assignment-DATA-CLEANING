@@ -90,8 +90,9 @@ df.master.gp<-group_by(df.master,aggField)
 
 df.master.summary<-summarize_all(df.master.gp,mean)
 
-A1<-strsplit(df.master.summary$aggField,"[0-9]+")
+A1<-strsplit(df.master.summary$aggField,"[0-9]+") # use a regular expression for the split...
 A2<-unlist(A1, recursive = TRUE, use.names = FALSE) # cast to vector
+
 df.master.summary<-data.frame(activity=A2,df.master.summary)
 
 df.master.summary$aggField<-NULL
