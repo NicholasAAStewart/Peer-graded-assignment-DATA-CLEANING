@@ -9,8 +9,7 @@
 # output: activity as a descriptive character string
 
 look_up_label<-function(x) { 
-  
-  
+  # x is passed as a numeric vector...
   d<-length(x)
   y<-rep("A",length(d)) # initialize vector y with all A's, later y will be assigned a description of activity dependiing on code.
   
@@ -22,13 +21,15 @@ for (i in 1:d) {
   else if (x[i] == 5) { y[i]<-("standing")}
   else { y[i]<-("laying")}
   
-               }
+               } # end for loop
   return (y)
 } # end function
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Begin R code...
 # ------------------------------------------------------------------------------------------------------------------------------------
+
+# NOTE: adjust directories as needed...
 
 df.test<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\test\\X_test.txt",header=FALSE)   # read in test data
 label.test<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\test\\y_test.txt",header=FALSE) # read in activity labels
@@ -90,16 +91,17 @@ df.master.gp<-group_by(df.master,aggField)
 
 df.master.summary<-summarize_all(df.master.gp,mean)
 
-A1<-strsplit(df.master.summary$aggField,"[0-9]+") # use a regular expression for the split...
-A2<-unlist(A1, recursive = TRUE, use.names = FALSE) # cast to vector
+A1<-strsplit(df.master.summary$aggField,"[0-9]+") # use a regular expression for the split...to
+                                                  # separate activity from concatenated field (aggField)
+A2<-unlist(A1, recursive = TRUE, use.names = FALSE) # cast list to vector
 
-df.master.summary<-data.frame(activity=A2,df.master.summary)
+df.master.summary<-data.frame(activity=A2,df.master.summary) 3 form data frame 2
 
-df.master.summary$aggField<-NULL
+df.master.summary$aggField<-NULL # set aggField to NULL (no longer of use)
 
-df.master.summary<-df.master.summary[order(df.master.summary$subject),]
+df.master.summary<-df.master.summary[order(df.master.summary$subject),]  # order by subject number
 
-df.final<-df.master.summary # second master frame taking averages by activity and subject...
+df.final<-df.master.summary # second master frame (frame 2) taking averages by activity and subject...
 
 # ------------------------------------------------------------------------------------------
 # End R code
