@@ -6,7 +6,7 @@
 
 #FUNCTION:
 # input: activity label code
-# output: activity
+# output: activity as a descriptive character string
 
 look_up_label<-function(x) { 
   
@@ -15,12 +15,12 @@ look_up_label<-function(x) {
   y<-rep("A",length(d))
   
 for (i in 1:d) {
-  if (x[i] == 1) {y[i]<-("WALKING")}
-  else if (x[i] == 2) { y[i]<-("WALKINGUPSTAIRS")}
-  else if (x[i] == 3) { y[i]<-("WALKINGDOWNSTAIRS")}
-  else if (x[i] == 4) { y[i]<-("SITTING")}
-  else if (x[i] == 5) { y[i]<-("STANDING")}
-  else { y[i]<-("LAYING")}
+  if (x[i] == 1) {y[i]<-("walking")}
+  else if (x[i] == 2) { y[i]<-("walkingupstairs")}
+  else if (x[i] == 3) { y[i]<-("walkingdownstairs")}
+  else if (x[i] == 4) { y[i]<-("sitting")}
+  else if (x[i] == 5) { y[i]<-("standing")}
+  else { y[i]<-("laying")}
   
                }
   return (y)
