@@ -12,7 +12,7 @@ look_up_label<-function(x) {
   
   
   d<-length(x)
-  y<-rep("A",length(d))
+  y<-rep("A",length(d)) # initialize vector y with all A's, later y will be assigned a description of activity dependiing on code.
   
 for (i in 1:d) {
   if (x[i] == 1) {y[i]<-("walking")}
