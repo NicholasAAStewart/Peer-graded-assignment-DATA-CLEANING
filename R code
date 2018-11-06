@@ -83,7 +83,7 @@ df.master<-stacked.frame[,W]   # first master frame of test and training data...
 library(dplyr)
 
 df.master$aggField<-paste(df.master$activityLabel,df.master$subject,sep="",collapse=NULL)   # aggField concatenated subject and activity to be used as a grouping variable
-                                                                                            # for instance subject 2 and LAYING will be recored as "2LAYING" and aggregation will
+                                                                                            # for instance LAYING for subject 2 will be recored as "LAYING2" and aggregation will
                                                                                             # take place at that level...
 df.master$activityLabel<-NULL
 df.master.gp<-group_by(df.master,aggField)
@@ -98,7 +98,10 @@ df.master.summary$aggField<-NULL
 
 df.master.summary<-df.master.summary[order(df.master.summary$subject),]
 
-df.final<-df.master.summary # second master frame
+df.final<-df.master.summary # second master frame taking averages by activity and subject...
 
+# ------------------------------------------------------------------------------------------
+# End R code
+#-------------------------------------------------------------------------------------------
 
 
