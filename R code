@@ -1,0 +1,104 @@
+# Author: Nicholas Stewart
+# Coursera Course: Getting and Cleaning Data
+# Date: November 6, 2018
+
+# Peer-graded assignment (week 4)
+
+#FUNCTION:
+# input: activity label code
+# output: activity
+
+look_up_label<-function(x) { 
+  
+  
+  d<-length(x)
+  y<-rep("A",length(d))
+  
+for (i in 1:d) {
+  if (x[i] == 1) {y[i]<-("WALKING")}
+  else if (x[i] == 2) { y[i]<-("WALKINGUPSTAIRS")}
+  else if (x[i] == 3) { y[i]<-("WALKINGDOWNSTAIRS")}
+  else if (x[i] == 4) { y[i]<-("SITTING")}
+  else if (x[i] == 5) { y[i]<-("STANDING")}
+  else { y[i]<-("LAYING")}
+  
+               }
+  return (y)
+} # end function
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Begin R code...
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+df.test<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\test\\X_test.txt",header=FALSE)   # read in test data
+label.test<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\test\\y_test.txt",header=FALSE) # read in activity labels
+subject.test<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\test\\subject_test.txt",header=FALSE) # read in subject number
+
+features<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\features.txt",header=FALSE)   # get names of data columns
+
+colnames(features)<-c("ColumnNumber","Heading")
+
+features$Heading<-as.character(features$Heading)
+
+df.test<-cbind(subject.test,label.test,df.test)
+
+x<-c("subject","activityLabel",features$Heading)
+
+colnames(df.test)<-x
+
+df.test$activityLabel<-look_up_label(df.test$activityLabel)
+
+df.train<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\train\\X_train.txt",header=FALSE) # read in train data
+label.train<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\train\\y_train.txt",header=FALSE) # read in activity labels
+subject.train<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\train\\subject_train.txt",header=FALSE) # read in subject number
+
+features<-read.table("C:\\Users\\nstewart\\Desktop\\UCI HAR Dataset\\features.txt",header=FALSE)  # get names of data columns
+
+colnames(features)<-c("ColumnNumber","Heading")
+
+features$Heading<-as.character(features$Heading)
+
+df.train<-cbind(subject.train,label.train,df.train)
+
+x<-c("subject","activityLabel",features$Heading)
+
+colnames(df.train)<-x
+
+df.train$activityLabel<-look_up_label(df.train$activityLabel)
+
+stacked.frame<-rbind(df.test,df.train)
+
+y<-grep("mean",colnames(stacked.frame)) # search for columns with "mean" label
+z<-grep("std",colnames(stacked.frame))  # search for columns with "std" label
+
+W<-c(y,z)
+
+W<-W[order(W)]
+
+
+W<-c(1,2,W)
+
+df.master<-stacked.frame[,W]   # first master frame of test and training data...referencing mean and std columns
+
+library(dplyr)
+
+df.master$aggField<-paste(df.master$activityLabel,df.master$subject,sep="",collapse=NULL)   # aggField concatenated subject and activity to be used as a grouping variable
+                                                                                            # for instance subject 2 and LAYING will be recored as "2LAYING" and aggregation will
+                                                                                            # take place at that level...
+df.master$activityLabel<-NULL
+df.master.gp<-group_by(df.master,aggField)
+
+df.master.summary<-summarize_all(df.master.gp,mean)
+
+A1<-strsplit(df.master.summary$aggField,"[0-9]+")
+A2<-unlist(A1, recursive = TRUE, use.names = FALSE) # cast to vector
+df.master.summary<-data.frame(activity=A2,df.master.summary)
+
+df.master.summary$aggField<-NULL
+
+df.master.summary<-df.master.summary[order(df.master.summary$subject),]
+
+df.final<-df.master.summary # second master frame
+
+
+
